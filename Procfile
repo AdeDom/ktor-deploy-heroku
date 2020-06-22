@@ -1,1 +1,1 @@
-web: java -jar build/libs/ktor deploy heroku-0.0.1.jar
+web: ./gradlew run
