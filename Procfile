@@ -1,1 +1,1 @@
-web: build/install/ktor deploy heroku/bin/ktor deploy heroku
+web: java -jar build/libs/ktor deploy heroku-0.0.1.jar
