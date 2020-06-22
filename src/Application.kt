@@ -37,7 +37,7 @@ fun Application.module(testing: Boolean = false) {
 
     install(Routing) {
 
-        get("/") {
+        get("/test") {
             val response = BaseResponse()
             call.respond(response)
         }
