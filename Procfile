@@ -1,1 +1,1 @@
-web: build/install/ktor deploy heroku/bin/ktor deploy heroku
+web: build/install/ktor_deploy_heroku/bin/ktor_deploy_heroku
