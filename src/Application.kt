@@ -5,9 +5,16 @@ import com.zaxxer.hikari.HikariDataSource
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
+import io.ktor.client.HttpClient
+import io.ktor.client.features.json.JacksonSerializer
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.request.post
+import io.ktor.client.request.url
 import io.ktor.features.CallLogging
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import io.ktor.jackson.jackson
 import io.ktor.response.respond
 import io.ktor.routing.Routing
@@ -58,8 +65,39 @@ fun Application.module() {
             call.respond(response)
         }
 
+        get("call-sign-in") {
+            httpClient {
+                val response = it.post<SignInResponse> {
+                    url("https://the-egg-game.herokuapp.com/api/account/sign-in")
+                    contentType(ContentType.Application.Json)
+                    body = SignInRequest("admin", "1234")
+                }
+                call.respond(response)
+            }
+        }
     }
 }
+
+inline fun httpClient(bloc: (HttpClient) -> Unit) {
+    val client = HttpClient {
+        install(JsonFeature) {
+            serializer = JacksonSerializer()
+        }
+    }
+    bloc.invoke(client)
+    client.close()
+}
+
+data class SignInRequest(
+    val username: String? = null,
+    val password: String? = null
+)
+
+data class SignInResponse(
+    var success: Boolean = false,
+    var message: String? = "Error",
+    var accessToken: String? = null
+)
 
 open class BaseResponse(
     var success: Boolean = false,
